@@ -55,7 +55,7 @@ async function main() {
     const contract = network.getContract("bloxcure");
 
     // Evaluate the specified transaction.
-    const result = await contract.evaluateTransaction("readData", "key2");
+    const result = await contract.evaluateTransaction("queryPatient", "PID1");
     console.log(
       `Transaction has been evaluated, result is: ${result.toString()}`
     );

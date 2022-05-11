@@ -45,7 +45,8 @@ cat <<EOF
 Total setup execution time : $(($(date +%s) - starttime)) secs ...
 
 Next, use the BloxCure application to interact with the deployed BloxCure contract.
-
+use this command to upgrade smartcontract
+./network.sh deployCC -ccn bloxcure -ccv 1 -ccs 3 -cci initLedger -ccl javascript -ccp ../chaincode/bloxcure/
 
 
 EOF

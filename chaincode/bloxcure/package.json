@@ -1,6 +1,6 @@
 {
     "name": "bloxcure",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "description": "BloxCure contract implemented in JavaScript",
     "main": "index.js",
     "engines": {

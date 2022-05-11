@@ -7,5 +7,6 @@
 "use strict";
 
 const BloxCure = require("./lib/bloxcure");
-module.exports.BloxCure = BloxCure;
-module.exports.contracts = [BloxCure];
+const AdminContract = require("./lib/admin-contract");
+// module.exports.BloxCure = BloxCure;
+module.exports.contracts = [BloxCure, AdminContract];
