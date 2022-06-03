@@ -17,11 +17,12 @@ async function main() {
       __dirname,
       "..",
       "..",
+      "..",
       "initial-network",
       "organizations",
       "peerOrganizations",
-      "hospital1.example.com",
-      "connection-hospital1.json"
+      "hospital2.example.com",
+      "connection-hospital2.json"
     );
     let ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
 
@@ -31,10 +32,10 @@ async function main() {
     console.log(`Wallet path: ${walletPath}`);
 
     // Check to see if we've already enrolled the user.
-    const identity = await wallet.get("admin");
+    const identity = await wallet.get("patient1");
     if (!identity) {
       console.log(
-        'An identity for the user "admin" does not exist in the wallet'
+        'An identity for the user "patient1" does not exist in the wallet'
       );
       console.log("Run the registerUser.js application before retrying");
       return;
@@ -44,7 +45,7 @@ async function main() {
     const gateway = new Gateway();
     await gateway.connect(ccp, {
       wallet,
-      identity: "admin",
+      identity: "patient1",
       discovery: { enabled: true, asLocalhost: true },
     });
 

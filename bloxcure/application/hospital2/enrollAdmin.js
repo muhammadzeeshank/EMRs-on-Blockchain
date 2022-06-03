@@ -18,16 +18,17 @@ async function main() {
       __dirname,
       "..",
       "..",
+      "..",
       "initial-network",
       "organizations",
       "peerOrganizations",
-      "hospital1.example.com",
-      "connection-hospital1.json"
+      "hospital2.example.com",
+      "connection-hospital2.json"
     );
     const ccp = JSON.parse(fs.readFileSync(ccpPath, "utf8"));
 
     // Create a new CA client for interacting with the CA.
-    const caInfo = ccp.certificateAuthorities["ca.hospital1.example.com"];
+    const caInfo = ccp.certificateAuthorities["ca.hospital2.example.com"];
     const caTLSCACerts = caInfo.tlsCACerts.pem;
     const ca = new FabricCAServices(
       caInfo.url,
@@ -48,37 +49,18 @@ async function main() {
       );
       return;
     }
-    let firstName = "Fahad";
-    let lastName = "bin raza";
-    let role = "admin";
+
     // Enroll the admin user, and import the new identity into the wallet.
     const enrollment = await ca.enroll({
       enrollmentID: "admin",
       enrollmentSecret: "adminpw",
-      attrs: [
-        {
-          name: "firstName",
-          value: firstName,
-          ecert: true,
-        },
-        {
-          name: "lastName",
-          value: lastName,
-          ecert: true,
-        },
-        {
-          name: "role",
-          value: role,
-          ecert: true,
-        },
-      ],
     });
     const x509Identity = {
       credentials: {
         certificate: enrollment.certificate,
         privateKey: enrollment.key.toBytes(),
       },
-      mspId: "hospital1MSP",
+      mspId: "hospital2MSP",
       type: "X.509",
     };
     await wallet.put("admin", x509Identity);

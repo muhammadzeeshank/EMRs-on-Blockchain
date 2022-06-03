@@ -8,5 +8,8 @@
 
 const BloxCure = require("./lib/bloxcure");
 const AdminContract = require("./lib/admin-contract");
-// module.exports.BloxCure = BloxCure;
-module.exports.contracts = [BloxCure, AdminContract];
+const PatientContract = require("./lib/patient-contract");
+module.exports.BloxCure = BloxCure;
+module.exports.AdminContract = AdminContract;
+module.exports.PatientContract = PatientContract;
+module.exports.contracts = [BloxCure, AdminContract, PatientContract];

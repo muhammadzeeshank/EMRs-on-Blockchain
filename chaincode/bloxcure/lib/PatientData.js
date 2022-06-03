@@ -2,7 +2,7 @@ const crypto = require("crypto");
 
 class PatientData {
   constructor(
-    patientId,
+    patientID,
     firstName,
     lastName,
     password,
@@ -18,7 +18,7 @@ class PatientData {
     treatment = "",
     followUp = ""
   ) {
-    this.patientId = patientId;
+    this.patientID = patientID;
     this.firstName = firstName;
     this.lastName = lastName;
     this.password = crypto.createHash("sha256").update(password).digest("hex");

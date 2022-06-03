@@ -54,9 +54,46 @@ class BloxCure extends Contract {
   async patientExists(ctx, patientID) {
     const patientAsBytes = await ctx.stub.getState(patientID); // get the patient from chaincode state
     if (!patientAsBytes || patientAsBytes.length === 0) {
-      throw new Error(`[-] ${patientID} does not exist`);
+      return false;
     }
-    return `[+] Patient with ${patientID} exists`;
+    return true;
+  }
+
+  async getAllPatientResults(iterator, isHistory) {
+    let allResults = [];
+    while (true) {
+      let res = await iterator.next();
+
+      if (res.value && res.value.value.toString()) {
+        let jsonRes = {};
+        console.log(res.value.value.toString("utf8"));
+
+        if (isHistory && isHistory === true) {
+          jsonRes.Timestamp = res.value.timestamp;
+        }
+        jsonRes.Key = res.value.key;
+
+        try {
+          jsonRes.Record = JSON.parse(res.value.value.toString("utf8"));
+        } catch (err) {
+          console.log(err);
+          jsonRes.Record = res.value.value.toString("utf8");
+        }
+        allResults.push(jsonRes);
+      }
+      if (res.done) {
+        console.log("end of data");
+        await iterator.close();
+        console.info(allResults);
+        return allResults;
+      }
+    }
+  }
+  async getClientId(ctx) {
+    const clientIdentity = ctx.clientIdentity.getID();
+    let identity = clientIdentity.split("::")[1].split("::")[0];
+    let index = identity.search("CN") + 3;
+    return identity.slice(index);
   }
 }
 
