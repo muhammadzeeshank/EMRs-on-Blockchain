@@ -35,7 +35,8 @@ class BloxCure extends Contract {
       patientID: patientID,
       firstName: patientData.firstName,
       lastName: patientData.lastName,
-      age: patientData.age,
+      CNIC: patientData.CNIC,
+      birthDate: patientData.birthDate,
       phoneNumber: patientData.phoneNumber,
       address: patientData.address,
       bloodGroup: patientData.bloodGroup,
@@ -45,7 +46,6 @@ class BloxCure extends Contract {
       treatment: patientData.treatment,
       followUp: patientData.followUp,
       permissionGranted: patientData.permissionGranted,
-      password: patientData.password,
       pwdTemp: patientData.pwdTemp,
     };
     return patientData;

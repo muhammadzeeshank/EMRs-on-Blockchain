@@ -17,6 +17,7 @@ async function main() {
       __dirname,
       "..",
       "..",
+      "..",
       "initial-network",
       "organizations",
       "peerOrganizations",
@@ -61,13 +62,13 @@ async function main() {
     //   "createPatient",
     //   '{"patientID":"PID1","firstName":"Ahmad","lastName":"Munir","age":"21","phoneNumber":"+491764561111","address":"Mainzer landstrasse 134, 60326 Frankfurt am Main","bloodGroup":"B+","allergies":"No","symptoms":"Heart Burn, shortness of breath, Acidity","diagnosis":"Esophagitis","treatment":"omeprazole 40 mg for 10 days before food","followUp":"2 Weeks","permissionGranted":["hosp1admin","hosp2admin"],"password":"fd1e5d642da134218f1cc5c260feb3e4042658a35d78c4eb2fe2b2f1c7e7795b","pwdTemp":true}'
     // );
-    const result = await contract.submitTransaction(
+    await contract.submitTransaction(
       "createPatient",
-      '{"patientID":"PID12","firstName":"Ahmad","lastName":"Munir","age":"21","phoneNumber":"+491764561111","address":"Mainzer landstrasse 134, 60326 Frankfurt am Main","bloodGroup":"B+","allergies":"No","symptoms":"Heart Burn, shortness of breath, Acidity","diagnosis":"Esophagitis","treatment":"omeprazole 40 mg for 10 days before food","followUp":"2 Weeks","permissionGranted":["hosp1admin","hosp2admin"],"password":"fd1e5d642da134218f1cc5c260feb3e4042658a35d78c4eb2fe2b2f1c7e7795b","pwdTemp":true}'
+      `{"patientID":"${userID}","CNIC":"${CNIC}","firstName":"${firstName}","lastName":"${lastName}","birthDate":"${birthDate}","phoneNumber":"${phoneNumber}",emergPhoneNumber:"${emergPhoneNumber}","address":"${address}","bloodGroup":"${bloodGroup}"}`
     );
 
     // await contract.submitTransaction("writeData", "PID10", "hi how are you");
-    console.log(result.toString(), "Transaction has been submitted");
+    console.log("Transaction has been submitted");
 
     // Disconnect from the gateway.
     await gateway.disconnect();

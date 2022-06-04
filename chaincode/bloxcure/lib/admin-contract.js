@@ -29,6 +29,8 @@ class AdminContract extends BloxCure {
       patientID: patientID,
       firstName: patientData.firstName,
       lastName: patientData.lastName,
+      phoneNumber: patientData.phoneNumber,
+      emergPhoneNumber: patientData.emergPhoneNumber,
     };
     return patientData;
   }
@@ -42,19 +44,18 @@ class AdminContract extends BloxCure {
         `Empty or null values should not be passed for password parameter`
       );
     }
-
+    let changedBy = "admin";
     let newPatient = await new Patient(
       args.patientID,
       args.firstName,
       args.lastName,
-      args.password,
-      args.age,
+      args.CNIC,
+      args.birthDate,
       args.phoneNumber,
       args.emergPhoneNumber,
       args.address,
       args.bloodGroup,
-      args.changedBy,
-      args.allergies
+      changedBy
     );
     // return newPatient;
     const exists = await super.patientExists(ctx, newPatient.patientID);
@@ -74,7 +75,7 @@ class AdminContract extends BloxCure {
     for (let i = 0; i < asset.length; i++) {
       const obj = asset[i];
       asset[i] = {
-        patientId: obj.Key,
+        patientID: obj.Key,
         firstName: obj.Record.firstName,
         lastName: obj.Record.lastName,
         phoneNumber: obj.Record.phoneNumber,

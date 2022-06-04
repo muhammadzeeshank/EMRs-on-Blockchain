@@ -5,8 +5,8 @@ class PatientData {
     patientID,
     firstName,
     lastName,
-    password,
-    age,
+    CNIC,
+    birthDate,
     phoneNumber,
     emergPhoneNumber,
     address,
@@ -21,8 +21,8 @@ class PatientData {
     this.patientID = patientID;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.password = crypto.createHash("sha256").update(password).digest("hex");
-    this.age = age;
+    this.CNIC = CNIC;
+    this.birthDate = birthDate;
     this.phoneNumber = phoneNumber;
     this.emergPhoneNumber = emergPhoneNumber;
     this.address = address;
