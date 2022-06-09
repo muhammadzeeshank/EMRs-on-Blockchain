@@ -1,10 +1,10 @@
 Hospital1 admin credentials:
-name: admin@hospital1
-pass: pwd@hospital1
+name: hospital1admin
+pass: adminpw
 
 Hospital2 admin credentials:
-name: admin@hospital2
-pass: pwd@hospital2
+name: hospital2admin
+pass: adminpw
 
 Orderer admin credentials:
 name: admin

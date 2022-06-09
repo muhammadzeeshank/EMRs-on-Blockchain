@@ -37,16 +37,17 @@ async function main() {
     console.log(`Wallet path: ${walletPath}`);
 
     // Check to see if we've already enrolled the user.
-    const userIdentity = await wallet.get("patient1");
+    const userIdentity = await wallet.get("patient2");
     if (userIdentity) {
       console.log(
-        'An identity for the user "patient1" already exists in the wallet'
+        'An identity for the user "patient2" already exists in the wallet'
       );
       return;
     }
 
     // Check to see if we've already enrolled the admin user.
     const adminIdentity = await wallet.get("admin");
+    console.log(`AdminIdentity:${adminIdentity.mspId}`);
     if (!adminIdentity) {
       console.log(
         'An identity for the admin user "admin" does not exist in the wallet'
@@ -60,7 +61,9 @@ async function main() {
       .getProviderRegistry()
       .getProvider(adminIdentity.type);
     const adminUser = await provider.getUserContext(adminIdentity, "admin");
-
+    const adminUser1 = JSON.parse(adminUser);
+    console.log(`AdminUser:${adminUser1.mspid}`);
+    console.log(`Provider:${JSON.parse(provider)}`);
     // Register the user, enroll the user, and import the new identity into the wallet.
     let firstName = "Fahad";
     let lastName = "bin raza";
@@ -68,7 +71,7 @@ async function main() {
     const secret = await ca.register(
       {
         affiliation: "org2.department1",
-        enrollmentID: "patient1",
+        enrollmentID: "patient2",
         role: "client",
         attrs: [
           {
@@ -91,7 +94,7 @@ async function main() {
       adminUser
     );
     const enrollment = await ca.enroll({
-      enrollmentID: "patient1",
+      enrollmentID: "patient2",
       enrollmentSecret: secret,
       attrs: [
         {
@@ -119,12 +122,12 @@ async function main() {
       mspId: "hospital2MSP",
       type: "X.509",
     };
-    await wallet.put("patient1", x509Identity);
+    await wallet.put("patient2", x509Identity);
     console.log(
-      'Successfully registered and enrolled admin user "patient1" and imported it into the wallet'
+      'Successfully registered and enrolled admin user "patient2" and imported it into the wallet'
     );
   } catch (error) {
-    console.error(`Failed to register user "patient1": ${error}`);
+    console.error(`Failed to register user "patient2": ${error}`);
     process.exit(1);
   }
 }

@@ -23,7 +23,7 @@ services:
     ports:
       - "7054:7054"
       - "17054:17054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start -b hospital1admin:adminpw -d'
     volumes:
       - ../organizations/fabric-ca/hospital1:/etc/hyperledger/fabric-ca-server
     container_name: ca_hospital1
@@ -43,7 +43,7 @@ services:
     ports:
       - "8054:8054"
       - "18054:18054"
-    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start -b hospital2admin:adminpw -d'
     volumes:
       - ../organizations/fabric-ca/hospital2:/etc/hyperledger/fabric-ca-server
     container_name: ca_hospital2

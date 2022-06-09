@@ -1,5 +1,3 @@
-const crypto = require("crypto");
-
 class PatientData {
   constructor(
     patientID,
@@ -7,10 +5,13 @@ class PatientData {
     lastName,
     CNIC,
     birthDate,
+    gender,
     phoneNumber,
     emergPhoneNumber,
+    nationality,
     address,
-    bloodGroup,
+    blood,
+    mspID,
     changedBy = "",
     allergies = "",
     symptoms = "",
@@ -23,17 +24,20 @@ class PatientData {
     this.lastName = lastName;
     this.CNIC = CNIC;
     this.birthDate = birthDate;
+    this.gender = gender;
     this.phoneNumber = phoneNumber;
     this.emergPhoneNumber = emergPhoneNumber;
+    this.nationality = nationality;
     this.address = address;
-    this.bloodGroup = bloodGroup;
+    this.blood = blood;
+    this.docType = "patient";
+    this.mspID = mspID;
     this.changedBy = changedBy;
     this.allergies = allergies;
     this.symptoms = symptoms;
     this.diagnosis = diagnosis;
     this.treatment = treatment;
     this.followUp = followUp;
-    this.pwdTemp = true;
     this.permissionGranted = [];
     return this;
   }

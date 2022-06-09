@@ -6,7 +6,7 @@
 
 "use strict";
 
-const { Wallets } = require("fabric-network");
+const { Wallets, Gateway } = require("fabric-network");
 const FabricCAServices = require("fabric-ca-client");
 const fs = require("fs");
 const path = require("path");
@@ -16,6 +16,7 @@ async function main() {
     // load the network configuration
     const ccpPath = path.resolve(
       __dirname,
+      "..",
       "..",
       "..",
       "initial-network",
@@ -33,13 +34,14 @@ async function main() {
     // Create a new file system based wallet for managing identities.
     const walletPath = path.join(process.cwd(), "wallet");
     const wallet = await Wallets.newFileSystemWallet(walletPath);
-    console.log(`Wallet path: ${walletPath}`);
+    const walletm = await Wallets.newInMemoryWallet();
+    console.log(`Wallet: ${walletm}`);
 
     // Check to see if we've already enrolled the user.
-    const userIdentity = await wallet.get("PID1");
+    const userIdentity = await wallet.get("PID29");
     if (userIdentity) {
       console.log(
-        'An identity for the user "PID1" already exists in the wallet'
+        'An identity for the user "PID29" already exists in the wallet'
       );
       return;
     }
@@ -64,10 +66,11 @@ async function main() {
     let firstName = "Fahad";
     let lastName = "bin raza";
     let role = "patient";
+    let CNIC = "38302245347635";
     const secret = await ca.register(
       {
         affiliation: "org1.department1",
-        enrollmentID: "PID1",
+        enrollmentID: "PID29",
         role: "client",
         attrs: [
           {
@@ -81,6 +84,11 @@ async function main() {
             ecert: true,
           },
           {
+            name: "CNIC",
+            value: CNIC,
+            ecert: true,
+          },
+          {
             name: "role",
             value: role,
             ecert: true,
@@ -90,7 +98,7 @@ async function main() {
       adminUser
     );
     const enrollment = await ca.enroll({
-      enrollmentID: "PID1",
+      enrollmentID: "PID29",
       enrollmentSecret: secret,
       attrs: [
         {
@@ -101,6 +109,11 @@ async function main() {
         {
           name: "lastName",
           value: lastName,
+          ecert: true,
+        },
+        {
+          name: "CNIC",
+          value: CNIC,
           ecert: true,
         },
         {
@@ -118,12 +131,43 @@ async function main() {
       mspId: "hospital1MSP",
       type: "X.509",
     };
-    await wallet.put("PID1", x509Identity);
+    walletm.put("PID29", x509Identity);
+    console.log(walletm.get("PID6"));
+
+    // query part *******************************
+    console.log("before gateway conectted");
+    // Create a new gateway for connecting to our peer node.
+    const gateway = new Gateway();
+    await gateway.connect(ccp, {
+      walletm,
+      identity: "PID29",
+      discovery: { enabled: true, asLocalhost: true },
+    });
+
+    console.log("gateway conectted");
+
+    // Get the network (channel) our contract is deployed to.
+    const network = await gateway.getNetwork("islamabadhospitalschannel");
+
+    // Get the contract from the network.
+    const contract = network.getContract("bloxcure", "PatientContract");
+
+    // Evaluate the specified transaction.
+    let result = await contract.evaluateTransaction("queryPatient");
+
     console.log(
-      'Successfully registered and enrolled admin user "PID1" and imported it into the wallet'
+      `Transaction has been evaluated, result is: ${result.toString()}`
+    );
+
+    // Disconnect from the gateway.
+    await gateway.disconnect();
+
+    // query part end **********************************
+    console.log(
+      'Successfully registered and enrolled admin user "PID29" and imported it into the wallet'
     );
   } catch (error) {
-    console.error(`Failed to register user "PID1": ${error}`);
+    console.error(`Failed to register user "PID29": ${error}`);
     process.exit(1);
   }
 }

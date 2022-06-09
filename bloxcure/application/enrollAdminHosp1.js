@@ -40,38 +40,19 @@ async function main() {
     const wallet = await Wallets.newFileSystemWallet(walletPath);
     console.log(`Wallet path: ${walletPath}`);
 
-    // Check to see if we've already enrolled the admin user.
-    const identity = await wallet.get("admin");
+    // Check to see if we've already enrolled the hospital1admin user.
+    const identity = await wallet.get("hospital1admin");
     if (identity) {
       console.log(
-        'An identity for the admin user "admin" already exists in the wallet'
+        'An identity for the hospital1admin user "hospital1admin" already exists in the wallet'
       );
       return;
     }
-    let firstName = "Fahad";
-    let lastName = "bin raza";
-    let role = "admin";
-    // Enroll the admin user, and import the new identity into the wallet.
+
+    // Enroll the hospital1admin user, and import the new identity into the wallet.
     const enrollment = await ca.enroll({
-      enrollmentID: "admin",
+      enrollmentID: "hospital1admin",
       enrollmentSecret: "adminpw",
-      attrs: [
-        {
-          name: "firstName",
-          value: firstName,
-          ecert: true,
-        },
-        {
-          name: "lastName",
-          value: lastName,
-          ecert: true,
-        },
-        {
-          name: "role",
-          value: role,
-          ecert: true,
-        },
-      ],
     });
     const x509Identity = {
       credentials: {
@@ -81,12 +62,14 @@ async function main() {
       mspId: "hospital1MSP",
       type: "X.509",
     };
-    await wallet.put("admin", x509Identity);
+    await wallet.put("hospital1admin", x509Identity);
     console.log(
-      'Successfully enrolled admin user "admin" and imported it into the wallet'
+      'Successfully enrolled hospital1admin user "hospital1admin" and imported it into the wallet'
     );
   } catch (error) {
-    console.error(`Failed to enroll admin user "admin": ${error}`);
+    console.error(
+      `Failed to enroll hospital1admin user "hospital1admin": ${error}`
+    );
     process.exit(1);
   }
 }

@@ -15,8 +15,12 @@ class BloxCure extends Contract {
   // readData()
   async initLedger(ctx) {
     console.info("============= START : Initialize Ledger ===========");
-
-    for (let i = 0; i < initialData.length; i++) {
+    //putting dummy patient in database
+    // await ctx.stub.putState(
+    //   `PID0`,
+    //   Buffer.from(JSON.stringify(initialData[0]))
+    // );
+    for (let i = 0; i < 1; i++) {
       initialData[i].docType = "patient";
       await ctx.stub.putState(
         `PID${i}`,
@@ -37,18 +41,42 @@ class BloxCure extends Contract {
       lastName: patientData.lastName,
       CNIC: patientData.CNIC,
       birthDate: patientData.birthDate,
+      gender: patientData.gender,
       phoneNumber: patientData.phoneNumber,
+      nationality: patientData.nationality,
       address: patientData.address,
-      bloodGroup: patientData.bloodGroup,
+      blood: patientData.blood,
       allergies: patientData.allergies,
       symptoms: patientData.symptoms,
       diagnosis: patientData.diagnosis,
       treatment: patientData.treatment,
       followUp: patientData.followUp,
       permissionGranted: patientData.permissionGranted,
-      pwdTemp: patientData.pwdTemp,
+      mspID: patientData.mspID,
     };
     return patientData;
+  }
+
+  async queryDoctor(ctx, doctorID) {
+    const doctorAsBytes = await ctx.stub.getState(doctorID);
+    if (!doctorAsBytes || doctorAsBytes.length === 0) {
+      throw new Error(`${doctorID} does not exist`);
+    }
+    let doctorData = JSON.parse(doctorAsBytes.toString());
+    doctorData = {
+      doctorID: doctorID,
+      firstName: doctorData.firstName,
+      lastName: doctorData.lastName,
+      speciality: doctorData.speciality,
+      CNIC: doctorData.CNIC,
+      gender: doctorData.gender,
+      phoneNumber: doctorData.phoneNumber,
+      mspID: doctorData.mspID,
+      patientPermissionAcquired: doctorData.patientPermissionAcquired,
+      adminPermissionGranted: doctorData.adminPermissionGranted,
+      chengedBy: doctorData.changedBy,
+    };
+    return doctorData;
   }
 
   async patientExists(ctx, patientID) {
@@ -59,7 +87,7 @@ class BloxCure extends Contract {
     return true;
   }
 
-  async getAllPatientResults(iterator, isHistory) {
+  async getAllUserResults(iterator, isHistory) {
     let allResults = [];
     while (true) {
       let res = await iterator.next();

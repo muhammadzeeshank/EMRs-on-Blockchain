@@ -32,10 +32,11 @@ async function main() {
     console.log(`Wallet path: ${walletPath}`);
 
     // Check to see if we've already enrolled the user.
-    const identity = await wallet.get("PID8");
+    const identity = await wallet.get("PID6");
+    console.log(`Identity: ${identity}`);
     if (!identity) {
       console.log(
-        'An identity for the user "PID8" does not exist in the wallet'
+        'An identity for the user "PID6" does not exist in the wallet'
       );
       console.log("First enroll then try to get data");
       return;
@@ -45,7 +46,7 @@ async function main() {
     const gateway = new Gateway();
     await gateway.connect(ccp, {
       wallet,
-      identity: "PID8",
+      identity: "PID6",
       discovery: { enabled: true, asLocalhost: true },
     });
 
@@ -53,10 +54,10 @@ async function main() {
     const network = await gateway.getNetwork("islamabadhospitalschannel");
 
     // Get the contract from the network.
-    const contract = network.getContract("bloxcure", "PatientContract");
+    const contract = network.getContract("bloxcure");
 
     // Evaluate the specified transaction.
-    let result = await contract.evaluateTransaction("queryPatient");
+    let result = await contract.evaluateTransaction("queryPatient", "PID0");
 
     console.log(
       `Transaction has been evaluated, result is: ${result.toString()}`

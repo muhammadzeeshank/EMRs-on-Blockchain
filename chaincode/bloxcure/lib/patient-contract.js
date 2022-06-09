@@ -4,7 +4,7 @@ const BloxCure = require("./bloxcure");
 
 class PatientContract extends BloxCure {
   // default method that is executed before every transaction
-  // this method limits access controle of this smartcontract only to admin
+  // this method limits access controle of this smartcontract only to patient
   async beforeTransaction(ctx) {
     if (!ctx.clientIdentity.assertAttributeValue("role", "patient")) {
       throw new Error(`[-] Only patient has access to this method`);

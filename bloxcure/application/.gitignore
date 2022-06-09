@@ -37,6 +37,8 @@ bower_components
 build/Release
 
 # Dependency directories
+hospital2/
+test/
 node_modules/
 jspm_packages/
 
@@ -78,3 +80,4 @@ typings/
 
 wallet
 !wallet/.gitkeep
+
