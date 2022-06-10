@@ -12,7 +12,6 @@ class PatientData {
     address,
     blood,
     mspID,
-    changedBy = "",
     allergies = "",
     symptoms = "",
     diagnosis = "",
@@ -32,13 +31,14 @@ class PatientData {
     this.blood = blood;
     this.docType = "patient";
     this.mspID = mspID;
-    this.changedBy = changedBy;
     this.allergies = allergies;
     this.symptoms = symptoms;
     this.diagnosis = diagnosis;
     this.treatment = treatment;
     this.followUp = followUp;
-    this.permissionGranted = [];
+    this.changedBy = [];
+    this.doctorPermissionGranted = [];
+    this.adminPermissionGranted = [];
     return this;
   }
 }

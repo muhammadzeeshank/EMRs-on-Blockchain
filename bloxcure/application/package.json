@@ -16,10 +16,12 @@
     "author": "Hyperledger",
     "license": "Apache-2.0",
     "dependencies": {
+        "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
         "express": "^4.18.1",
         "fabric-ca-client": "^2.2.4",
-        "fabric-network": "^2.2.4"
+        "fabric-network": "^2.2.4",
+        "jsonwebtoken": "^8.5.1"
     },
     "devDependencies": {
         "chai": "^4.2.0",

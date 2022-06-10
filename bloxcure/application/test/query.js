@@ -32,11 +32,11 @@ async function main() {
     console.log(`Wallet path: ${walletPath}`);
 
     // Check to see if we've already enrolled the user.
-    const identity = await wallet.get("PID6");
-    console.log(`Identity: ${identity}`);
-    if (!identity) {
+    const x509identity = await wallet.get("hospital1admin");
+    console.log(`Identity: ${JSON.stringify(x509identity)}`);
+    if (!x509identity) {
       console.log(
-        'An identity for the user "PID6" does not exist in the wallet'
+        'An identity for the user "hospital1admin" does not exist in the wallet'
       );
       console.log("First enroll then try to get data");
       return;
@@ -45,8 +45,7 @@ async function main() {
     // Create a new gateway for connecting to our peer node.
     const gateway = new Gateway();
     await gateway.connect(ccp, {
-      wallet,
-      identity: "PID6",
+      identity: x509identity,
       discovery: { enabled: true, asLocalhost: true },
     });
 
@@ -54,11 +53,21 @@ async function main() {
     const network = await gateway.getNetwork("islamabadhospitalschannel");
 
     // Get the contract from the network.
-    const contract = network.getContract("bloxcure");
-
+    const contract = network.getContract("bloxcure", "AdminContract");
+    let CNIC = "3";
+    let firstName = "Hi";
+    let lastName = "si";
+    let birthDate = "ni";
+    let gender = "ti";
+    let phoneNumber = "3";
+    let emergPhoneNumber = "4";
+    let hospitalID = "6";
+    let nationality = "2";
+    let address = "ki";
+    let blood = "b";
+    let role = "p";
     // Evaluate the specified transaction.
-    let result = await contract.evaluateTransaction("queryPatient", "PID0");
-
+    let result = await contract.evaluateTransaction("queryPatient", "PID6");
     console.log(
       `Transaction has been evaluated, result is: ${result.toString()}`
     );

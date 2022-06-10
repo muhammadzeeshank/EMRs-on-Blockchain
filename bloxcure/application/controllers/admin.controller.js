@@ -1,90 +1,98 @@
 const adminModel = require("../models/admin.model");
 const appModel = require("../models/app.model");
+const middleWares = require("../middlewares/app.middleware");
 
 // only for testing. Remove it after adding JWT logic
-let x509Identity = require("../frontend test data/x509Identityadmin.json");
-x509Identity = x509Identity[0];
-const adminID = "hospital1admin";
+// let x509Identity = require("../frontend test data/x509Identityadmin.json");
+// x509Identity = x509Identity[0];
+// const adminID = "hospital1admin";
 
 // method to calculate JWT token and to return dashboard data
 async function adminLogin(req, res) {
   let adminID = req.body.userID;
   let x509Identity = req.body.x509Identity;
+  let hospitalID = req.body.hospitalID;
+  try {
+    // method to connect to fabric network
+    [ca, gateway, contract] = await appModel.connectToFabric(
+      hospitalID,
+      x509Identity,
+      "AdminContract"
+    );
+    let result = await contract.evaluateTransaction("queryAllUsers");
+    console.log(`Transaction has been evaluated`);
+    await gateway.disconnect();
 
-  const wallet = await appModel.buildWallet(adminID, x509Identity);
+    // method to send JWT token in cokie
+    appModel.generateAuthToken(req, res);
 
-  const hospitalID = appModel.getHospitalID(x509Identity);
-  // method to connect to fabric network
-  [ca, gateway, contract] = await appModel.connectToFabric(
-    hospitalID,
-    adminID,
-    wallet,
-    "AdminContract"
-  );
-  let result = await contract.evaluateTransaction("queryAllPatients");
-  console.log(`Transaction has been evaluated`);
-  await gateway.disconnect();
-
-  // WORK: add logic to assign JWT token
-  res.status(201);
-  res.json(JSON.parse(result.toString()));
+    res.status(201);
+    res.json(JSON.parse(result.toString()));
+  } catch (error) {
+    res.status(400).send(`Invalid request: ${error}`);
+  }
 }
 
 // method to register a patient
 async function patientRegister(req, res) {
   let attributes = req.body;
-  console.log(attributes);
-  // just for testing. Remove it after adding JWT logic
+  let adminID = req.body.userID;
+  let x509Identity = req.body.x509Identity;
+  let hospitalID = req.body.hospitalID;
 
-  const wallet = await appModel.buildWallet(adminID, x509Identity);
-  const hospitalID = appModel.getHospitalID(x509Identity);
+  try {
+    // const hospitalID = appModel.getHospitalID(x509Identity);
 
-  // method to connect to fabric network
-  [ca, gateway, contract] = await appModel.connectToFabric(
-    hospitalID,
-    adminID,
-    wallet,
-    "AdminContract"
-  );
-  let userCredToEnroll = await adminModel.registerPatient(
-    ca,
-    contract,
-    attributes,
-    wallet,
-    hospitalID,
-    adminID
-  );
-  gateway.disconnect();
-  res.json(userCredToEnroll);
-  res.status(201);
+    // method to connect to fabric network
+    [ca, gateway, contract] = await appModel.connectToFabric(
+      hospitalID,
+      x509Identity,
+      "AdminContract"
+    );
+    let userCredToEnroll = await adminModel.registerPatient(
+      ca,
+      contract,
+      attributes,
+      x509Identity,
+      hospitalID,
+      adminID
+    );
+    gateway.disconnect();
+    res.status(201);
+    res.json(userCredToEnroll);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
 }
 
 // method to register a doctor
 async function doctorRegister(req, res) {
   let attributes = req.body;
-  console.log(attributes);
-  // just for testing. Remove it after adding JWT logic
+  let adminID = req.body.userID;
+  let x509Identity = req.body.x509Identity;
+  let hospitalID = req.body.hospitalID;
 
-  const wallet = await appModel.buildWallet(adminID, x509Identity);
-  const hospitalID = appModel.getHospitalID(x509Identity);
-  console.log(adminID);
-  // method to connect to fabric network
-  [ca, gateway, contract] = await appModel.connectToFabric(
-    hospitalID,
-    adminID,
-    wallet,
-    "AdminContract"
-  );
-  let userCredToEnroll = await adminModel.registerDoctor(
-    ca,
-    contract,
-    attributes,
-    wallet,
-    hospitalID,
-    adminID
-  );
-  gateway.disconnect();
-  res.json(userCredToEnroll);
+  try {
+    // method to connect to fabric network
+    [ca, gateway, contract] = await appModel.connectToFabric(
+      hospitalID,
+      x509Identity,
+      "AdminContract"
+    );
+    let userCredToEnroll = await adminModel.registerDoctor(
+      ca,
+      contract,
+      attributes,
+      x509Identity,
+      hospitalID,
+      adminID
+    );
+    gateway.disconnect();
+    res.status(201);
+    res.json(userCredToEnroll);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
 }
 module.exports = {
   adminLogin,

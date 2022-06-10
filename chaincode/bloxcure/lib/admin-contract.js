@@ -16,7 +16,21 @@ class AdminContract extends BloxCure {
   //Returns the last patientId in the set
   async getLatestPatientId(ctx) {
     let allResults = await this.queryAllPatients(ctx);
-    return allResults[allResults.length - 1].patientID;
+    if (allResults.length === 0) {
+      return "PID0";
+    } else {
+      return allResults[allResults.length - 1].patientID;
+    }
+  }
+
+  //Returns the last doctorId in the set
+  async getLatestDoctorId(ctx) {
+    let allResults = await this.queryAllDoctors(ctx);
+    if (allResults.length === 0) {
+      return "DID0";
+    } else {
+      return allResults[allResults.length - 1].doctorID;
+    }
   }
 
   // method which displays allowed patient data to Admin
@@ -47,7 +61,6 @@ class AdminContract extends BloxCure {
         `Empty or null values should not be passed for password parameter`
       );
     }
-
     let newPatient = await new Patient(
       args.patientID,
       args.firstName,

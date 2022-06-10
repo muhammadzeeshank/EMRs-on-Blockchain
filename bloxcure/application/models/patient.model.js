@@ -10,10 +10,6 @@ exports.enrollMySelf = async (userID, secret, hospitalID) => {
       `ca.hospital${hospitalID}.example.com`
     );
 
-    // Create a new file system based wallet for managing identities.
-    // const walletPath = path.join(process.cwd(), "wallet");
-    // const wallet = await appModel.buildWallet(walletPath);
-
     const enrollment = await ca.enroll({
       enrollmentID: userID,
       enrollmentSecret: secret,
@@ -30,7 +26,6 @@ exports.enrollMySelf = async (userID, secret, hospitalID) => {
     console.log(`Successfully enrolled user ${userID}`);
     return { userID, x509Identity };
   } catch (error) {
-    console.error(`Failed to enroll user userID: ${error}`);
-    process.exit(1);
+    throw `Failed to enroll user userID: ${error}`;
   }
 };

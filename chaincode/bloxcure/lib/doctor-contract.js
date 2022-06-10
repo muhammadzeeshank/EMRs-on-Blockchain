@@ -7,7 +7,7 @@ class DoctorContract extends BloxCure {
   // this method limits access control of this smartcontract only to doctor
   async beforeTransaction(ctx) {
     if (!ctx.clientIdentity.assertAttributeValue("role", "doctor")) {
-      throw new Error(`[-] Only patient has access to this method`);
+      throw new Error(`[-] Only doctor has access to this method`);
     }
   }
 

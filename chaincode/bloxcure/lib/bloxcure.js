@@ -7,7 +7,6 @@
 "use strict";
 
 const { Contract } = require("fabric-contract-api");
-let initialData = require("./initialData.json");
 
 class BloxCure extends Contract {
   // initLedger()
@@ -20,13 +19,13 @@ class BloxCure extends Contract {
     //   `PID0`,
     //   Buffer.from(JSON.stringify(initialData[0]))
     // );
-    for (let i = 0; i < 1; i++) {
-      initialData[i].docType = "patient";
-      await ctx.stub.putState(
-        `PID${i}`,
-        Buffer.from(JSON.stringify(initialData[i]))
-      );
-    }
+    // for (let i = 0; i < 1; i++) {
+    //   initialData[i].docType = "patient";
+    //   await ctx.stub.putState(
+    //     `PID${i}`,
+    //     Buffer.from(JSON.stringify(initialData[i]))
+    //   );
+    // }
     console.info("============= END : Initialize Ledger ===========");
   }
   async queryPatient(ctx, patientID) {
@@ -51,7 +50,6 @@ class BloxCure extends Contract {
       diagnosis: patientData.diagnosis,
       treatment: patientData.treatment,
       followUp: patientData.followUp,
-      permissionGranted: patientData.permissionGranted,
       mspID: patientData.mspID,
     };
     return patientData;
@@ -72,8 +70,6 @@ class BloxCure extends Contract {
       gender: doctorData.gender,
       phoneNumber: doctorData.phoneNumber,
       mspID: doctorData.mspID,
-      patientPermissionAcquired: doctorData.patientPermissionAcquired,
-      adminPermissionGranted: doctorData.adminPermissionGranted,
       chengedBy: doctorData.changedBy,
     };
     return doctorData;
@@ -81,6 +77,14 @@ class BloxCure extends Contract {
 
   async patientExists(ctx, patientID) {
     const patientAsBytes = await ctx.stub.getState(patientID); // get the patient from chaincode state
+    if (!patientAsBytes || patientAsBytes.length === 0) {
+      return false;
+    }
+    return true;
+  }
+
+  async doctorExists(ctx, doctorID) {
+    const patientAsBytes = await ctx.stub.getState(doctorID); // get the patient from chaincode state
     if (!patientAsBytes || patientAsBytes.length === 0) {
       return false;
     }

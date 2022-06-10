@@ -5,33 +5,92 @@ async function patientEnroll(req, res) {
   let patientID = req.body.userID;
   let secret = req.body.secret;
   let hospitalID = req.body.hospitalID;
-  let patientcredantials = await patientModel.enrollMySelf(
-    patientID,
-    secret,
-    hospitalID
-  );
-  res.json(patientcredantials);
+  try {
+    let patientcredantials = await patientModel.enrollMySelf(
+      patientID,
+      secret,
+      hospitalID
+    );
+    res.status(201);
+    res.json(patientcredantials);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
 }
 async function patientLogin(req, res) {
   let patientID = req.body.userID;
   let x509Identity = req.body.x509Identity;
   let hospitalID = req.body.hospitalID;
+  try {
+    let result = await appModel.queryTransaction(
+      patientID,
+      x509Identity,
+      hospitalID,
+      "PatientContract",
+      "queryPatient"
+    );
+    appModel.generateAuthToken(req, res);
+    res.status(201);
+    res.json(result);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
+}
 
-  let result = await appModel.queryTransaction(
-    patientID,
-    x509Identity,
-    hospitalID,
-    "PatientContract",
-    "queryPatient"
-  );
+// method to give edit permission to doctor
+async function grantAccessToDoctor(req, res) {
+  //******** just for testing. Remove it after adding JWT logic
+  let patientID = req.body.userID;
+  let x509Identity = req.body.x509Identity;
+  let hospitalID = req.body.hospitalID;
+  // const hospitalID = appModel.getHospitalID(x509Identity);
+  //*********
+  let doctorID = req.body.doctorID;
+  try {
+    if (!doctorID) {
+      throw "[-] Error: doctorID not provided!";
+    }
 
-  res.json(result);
-  res.status(201);
+    let result = await appModel.invokeTransaction(
+      patientID,
+      x509Identity,
+      hospitalID,
+      "PatientContract",
+      "grantAccessToDoctor",
+      doctorID
+    );
+    res.status(201).send(`Access granted to doctor: ${doctorID}`);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
+}
+// method to display doctors that have edit permissions
+async function doctorsPermissionGranted(req, res) {
+  //******** just for testing. Remove it after adding JWT logic
+  let patientID = req.body.userID;
+  let x509Identity = req.body.x509Identity;
+  const hospitalID = appModel.getHospitalID(x509Identity);
+  //*********
+  try {
+    let result = await appModel.queryTransaction(
+      patientID,
+      x509Identity,
+      hospitalID,
+      "PatientContract",
+      "queryDoctorPermissionGranted"
+    );
+    res.status(201);
+    res.json(result);
+  } catch (error) {
+    res.status(400).send(`Invalid response:${error}`);
+  }
 }
 
 module.exports = {
   patientEnroll,
   patientLogin,
+  doctorsPermissionGranted,
+  grantAccessToDoctor,
 };
 /***************for patient**************
 * For first time
